@@ -11,7 +11,7 @@ class Umbrella extends Phaser.Scene {
         }
 
         create() {
-                this.add.image(400, 0, 'background').setDepth(-1).setScale(0.5)
+                this.background = this.add.image(400, 0, 'background').setDepth(-1).setScale(0.5)
                 this.cursors = this.input.keyboard.createCursorKeys();
                 this.player = this.createPlayer()
                 this.playerFX = this.player.preFX.addColorMatrix();
@@ -25,6 +25,7 @@ class Umbrella extends Phaser.Scene {
         }
 
         update() {
+                this.scrollBackground()
                 if (this.cursors.left.isDown) {
                         this.umbrella.setAngularVelocity(-0.1);
                 } else if (this.cursors.right.isDown) {
@@ -35,8 +36,20 @@ class Umbrella extends Phaser.Scene {
                         if (d.y > config.height) this.drops.kill(d)
                 })
                 this.umbrella.angle = Phaser.Math.Clamp(this.umbrella.angle, -135, -45)
-                if (Math.random() < 0.005) this.rainDir *= -1
+                if (Math.random() < 0.01) this.rainDir *= -1
                 this.playerFX.brightness(this.dryness / 100)
+
+                if (this.dryness == 0) this.gameEnd('fail')
+                if (this.background.scale > 0.7) this.gameEnd('success')
+        }
+
+        scrollBackground(speed = 0.5) {
+                this.background.scale += 0.0002 * speed
+                this.background.y -= 0.1 * speed
+        }
+
+        gameEnd(outcome) {
+                console.log(outcome)
         }
 
         createPlayer() {
@@ -63,7 +76,7 @@ class Umbrella extends Phaser.Scene {
                                 y: 500
                         },
                         pointB: {
-                                x: -140,
+                                x: -120,
                                 y: 0
                         }
                 })
@@ -77,7 +90,6 @@ class Umbrella extends Phaser.Scene {
                                         shape: 'circle',
                                         ignorePointer: true,
                                         friction: 0,
-                                        // angular velocity dampen
                                         mass
                                 }, true)
                                 drop.setScale(0.1).setTexture('droplet')
