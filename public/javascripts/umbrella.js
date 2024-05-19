@@ -16,7 +16,7 @@ class Umbrella extends Phaser.Scene {
 
         async create() {
                 this.background = this.add.image(
-                        config.width / 2, 0, 'background').setDepth(-1).setScale(0.5)
+                        config.width / 2, -20, 'background').setDepth(-1).setScale(0.5)
                 this.cursors = this.input.keyboard.createCursorKeys();
                 this.player = this.createPlayer()
                 this.playerFX = this.player.preFX.addColorMatrix();
@@ -64,7 +64,7 @@ class Umbrella extends Phaser.Scene {
 
         checkWinCondition() {
                 if (this.dryness <= 25) this.gameEnd('Failure')
-                if (this.background.scale >= 1.50) this.gameEnd('Success!')
+                if (this.background.scale >= 1.25) this.gameEnd('Success!')
         }
 
         gameEnd(outcome) {
@@ -76,14 +76,14 @@ class Umbrella extends Phaser.Scene {
         }
 
         createPlayer() {
-                return this.matter.add.sprite(370, 550, 'player', null, {
+                return this.matter.add.sprite(config.width / 2 - 25, config.height - 50, 'player', null, {
                         label: 'Player',
                         shape: 'circle',
                         circleRadius: 700,
                         isSensor: true,
                         isStatic: true,
                         restitution: 1
-                }).setScale(0.1).setDepth(2)
+                }).setScale(0.07).setDepth(2)
         }
 
         createUmbrella() {
@@ -92,11 +92,11 @@ class Umbrella extends Phaser.Scene {
                         mass: 30
                 });
                 this.umbrella.setFrictionAir(0.1);
-                this.umbrella.setScale(0.6).setDepth(1)
+                this.umbrella.setScale(0.5).setDepth(1)
                 this.matter.add.worldConstraint(this.umbrella, 0, 1, {
                         pointA: {
                                 x: config.width / 2,
-                                y: config.height - config.height / 4
+                                y: config.height - config.height / 4 + 20
                         },
                         pointB: {
                                 x: -100,
@@ -138,7 +138,7 @@ class Umbrella extends Phaser.Scene {
 const config = {
         type: Phaser.AUTO,
         width: 800,
-        height: 600,
+        height: 500,
         backgroundColor: '#3440a6',
         physics: {
                 default: 'matter',
