@@ -57,7 +57,7 @@ class Umbrella extends Phaser.Scene {
                 camera.postFX.addTiltShift(0.25, 1.5, 0.001);
         }
 
-        scrollBackground(speed = 3.5) {
+        scrollBackground(speed = 2) {
                 this.background.scale += 0.0002 * speed
                 this.background.y -= 0.15 * speed
         }
