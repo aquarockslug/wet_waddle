@@ -2,6 +2,10 @@ class Umbrella extends Phaser.Scene {
         cursors;
         umbrella;
 
+        dryness = 100;
+        umbrellaSpeed = 0.15;
+        difficulty = 3;
+
         preload() {
                 this.load.image('umbrella', 'assets/sprites/umbrella.png');
                 this.load.image('player', 'assets/sprites/waddle.png');
@@ -10,50 +14,60 @@ class Umbrella extends Phaser.Scene {
                 this.load.json("sprites", "sprite-physics.json");
         }
 
-        create() {
-                this.background = this.add.image(400, 0, 'background').setDepth(-1).setScale(0.5)
+        async create() {
+                this.background = this.add.image(
+                        config.width / 2, 0, 'background').setDepth(-1).setScale(0.5)
                 this.cursors = this.input.keyboard.createCursorKeys();
                 this.player = this.createPlayer()
                 this.playerFX = this.player.preFX.addColorMatrix();
-                this.createUmbrella()
-                this.createWater()
-                this.dryness = 100
                 this.matter.world.on('collisionstart', (bodyA, bodyB) => {
                         if (bodyA.label == 'Player' || bodyB.label == 'Player')
                                 this.dryness -= 1
                 })
+                await Promise.all([
+                        this.createUmbrella(), this.createWater(), this.addPostFx()
+                ])
         }
 
         update() {
                 this.scrollBackground()
                 if (this.cursors.left.isDown) {
-                        this.umbrella.setAngularVelocity(-0.1);
+                        this.umbrella.setAngularVelocity(-this.umbrellaSpeed);
                 } else if (this.cursors.right.isDown) {
-                        this.umbrella.setAngularVelocity(0.1);
+                        this.umbrella.setAngularVelocity(this.umbrellaSpeed);
                 }
                 this.drops.getChildren().forEach((d) => {
                         d.angle = Phaser.Math.Clamp(d.angle, -45, 45)
                         if (d.y > config.height) this.drops.kill(d)
                 })
                 this.umbrella.angle = Phaser.Math.Clamp(this.umbrella.angle, -135, -45)
-                if (Math.random() < 0.01) this.rainDir *= -1
+                if (Math.random() < this.difficulty * 0.01) this.rainDir *= -1
                 this.playerFX.brightness(this.dryness / 100)
 
-                if (this.dryness == 0) this.gameEnd('fail')
-                if (this.background.scale > 0.7) this.gameEnd('success')
+                if (this.dryness == 0) this.gameEnd('Failure')
+                if (this.background.scale > 0.7) this.gameEnd('Success')
         }
 
-        scrollBackground(speed = 0.5) {
+        addPostFx() {
+                const camera = this.cameras.main;
+                camera.postFX.addTiltShift(0.3, 1, 0);
+        }
+
+        scrollBackground(speed = 0.75) {
                 this.background.scale += 0.0002 * speed
                 this.background.y -= 0.1 * speed
         }
 
         gameEnd(outcome) {
-                console.log(outcome)
+                this.add.text(config.width / 4, config.height / 4, outcome, {
+                        fontSize: '96px',
+                        color: 'rgb(255, 255, 255)'
+                });
+                this.scene.pause()
         }
 
         createPlayer() {
-                return this.matter.add.sprite(365, 575, 'player', null, {
+                return this.matter.add.sprite(370, 550, 'player', null, {
                         label: 'Player',
                         shape: 'circle',
                         circleRadius: 700,
@@ -70,25 +84,24 @@ class Umbrella extends Phaser.Scene {
                 });
                 this.umbrella.setFrictionAir(0.1);
                 this.umbrella.setScale(0.6).setDepth(1)
-                this.matter.add.worldConstraint(this.umbrella, 0, 0.9, {
+                this.matter.add.worldConstraint(this.umbrella, 0, 1, {
                         pointA: {
-                                x: 400,
-                                y: 500
+                                x: config.width / 2,
+                                y: config.height - config.height / 4
                         },
                         pointB: {
-                                x: -120,
+                                x: -100,
                                 y: 0
                         }
                 })
         }
 
-        createWater(dropCount = 80, dropsPerSecond = 40, mass = 3) {
+        createWater(dropCount = 75, dropsPerSecond = 75, mass = 3) {
                 const groupConfig = {
                         maxSize: dropCount,
                         createCallback: (drop) => {
                                 this.matter.add.gameObject(drop, {
                                         shape: 'circle',
-                                        ignorePointer: true,
                                         friction: 0,
                                         mass
                                 }, true)
@@ -105,7 +118,8 @@ class Umbrella extends Phaser.Scene {
                         const dropPosX = Math.floor(Math.random() * config.width * 2) -
                                 (config.width * this.rainDir) - 100
                         const drop = this.drops.get(dropPosX, -20)
-                        if (drop) drop.active = true
+                        if (!drop) return
+                        drop.active = true
                         drop.angle = 45 * this.rainDir * -1
                         drop.setVelocityY(0).setVelocityX(22 * this.rainDir)
                 })
@@ -120,7 +134,7 @@ const config = {
         physics: {
                 default: 'matter',
                 matter: {
-                        debug: true,
+                        // debug: true
                 }
         },
         scene: Umbrella
