@@ -39,7 +39,7 @@ class Umbrella extends Phaser.Scene {
                         this.input.activePointer.downX < config.width / 2) {
                         this.umbrella.setAngularVelocity(-this.umbrellaSpeed);
                 } else if (this.cursors.right.isDown || this.input.activePointer.isDown &&
-                        this.input.activePointer.downX < config.width / 2) {
+                        this.input.activePointer.downX > config.width / 2) {
                         this.umbrella.setAngularVelocity(this.umbrellaSpeed);
                 }
 
@@ -54,7 +54,7 @@ class Umbrella extends Phaser.Scene {
 
         addPostFx() {
                 const camera = this.cameras.main;
-                camera.postFX.addTiltShift(0.3, 1, 0.01);
+                camera.postFX.addTiltShift(0.25, 1.5, 0.001);
         }
 
         scrollBackground(speed = 3.5) {
@@ -64,7 +64,7 @@ class Umbrella extends Phaser.Scene {
 
         checkWinCondition() {
                 if (this.dryness <= 25) this.gameEnd('Failure')
-                if (this.background.scale >= 1.75) this.gameEnd('Success!')
+                if (this.background.scale >= 1.50) this.gameEnd('Success!')
         }
 
         gameEnd(outcome) {
