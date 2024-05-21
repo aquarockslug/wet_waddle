@@ -16,7 +16,7 @@ class Umbrella extends Phaser.Scene {
 
         async create() {
                 this.background = this.add.image(
-                        config.width / 2, -600, 'background').setDepth(-1).setScale(1.25)
+                        config.width / 2, -800, 'background').setDepth(-1).setScale(1.5)
                 this.cursors = this.input.keyboard.createCursorKeys();
                 this.player = this.createPlayer()
                 this.playerFX = this.player.preFX.addColorMatrix();
@@ -54,10 +54,10 @@ class Umbrella extends Phaser.Scene {
 
         addPostFx() {
                 const camera = this.cameras.main;
-                camera.postFX.addTiltShift(0.25, 1.5, 0.001);
+                camera.postFX.addVignette(0.5, 0.5, 0.8);
         }
 
-        scrollBackground(speed = 5) {
+        scrollBackground(speed = 8) {
                 this.background.scale -= 0.0001 * speed
                 this.background.y += 0.08 * speed
         }
@@ -105,7 +105,7 @@ class Umbrella extends Phaser.Scene {
                 })
         }
 
-        createWater(dropCount = 50, dropsPerSecond = 50, mass = 3) {
+        createWater(dropCount = 66, dropsPerSecond = 100, mass = 10) {
                 const groupConfig = {
                         maxSize: dropCount,
                         createCallback: (drop) => {
@@ -139,7 +139,7 @@ const config = {
         type: Phaser.AUTO,
         width: 800,
         height: 500,
-        backgroundColor: '#3440a6',
+        backgroundColor: '#253d5d',
         physics: {
                 default: 'matter',
                 matter: {
