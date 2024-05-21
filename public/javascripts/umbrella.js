@@ -16,7 +16,7 @@ class Umbrella extends Phaser.Scene {
 
         async create() {
                 this.background = this.add.image(
-                        config.width / 2, -20, 'background').setDepth(-1).setScale(0.5)
+                        config.width / 2, -600, 'background').setDepth(-1).setScale(1.25)
                 this.cursors = this.input.keyboard.createCursorKeys();
                 this.player = this.createPlayer()
                 this.playerFX = this.player.preFX.addColorMatrix();
@@ -57,14 +57,14 @@ class Umbrella extends Phaser.Scene {
                 camera.postFX.addTiltShift(0.25, 1.5, 0.001);
         }
 
-        scrollBackground(speed = 2) {
-                this.background.scale += 0.0002 * speed
-                this.background.y -= 0.15 * speed
+        scrollBackground(speed = 5) {
+                this.background.scale -= 0.0001 * speed
+                this.background.y += 0.08 * speed
         }
 
         checkWinCondition() {
                 if (this.dryness <= 25) this.gameEnd('Failure')
-                if (this.background.scale >= 1.25) this.gameEnd('Success!')
+                if (this.background.scale <= 0.5) this.gameEnd('Success!')
         }
 
         gameEnd(outcome) {
