@@ -4,10 +4,54 @@
 <head>
         <script src="javascripts/phaser.min.js "></script>
         <script src="javascripts/phaser-matter-collision.min.js"></script>
+        <style>
+                #main {
+                        width: 780px;
+                        height: 580px;
+                        border: 16px solid orange;
+                        background-color: #1a2d45;
+                }
+
+                #main_menu {
+                        position: absolute;
+                        left: 200px;
+                        top: 50px;
+                        width: 400px;
+                        color: orange;
+                }
+
+                h1 {
+                        font-size: 76px;
+                }
+
+                button,
+                h1 {
+                        display: flex;
+                        width: 100%;
+                        margin: 32px auto;
+                        justify-content: center;
+                }
+
+                canvas {
+                        position: absolute;
+                        top: 14px;
+                        left: 14px;
+                }
+        </style>
 </head>
 
 <body>
-        <script type="text/javascript" src="javascripts/umbrella.js"></script>
+        <div id="main">
+                <script type="text/javascript" src="javascripts/umbrella.js"></script>
+                <script type="text/javascript" src="javascripts/game.js"></script>
+                <div id=main_menu>
+                        <h1>Water Waddle</h1>
+                        <button id="start" onclick="start(); 
+					   document.getElementById('main_menu').remove()">
+                                <h2>Play</h2>
+                        </button>
+                </div>
+        </div>
 </body>
 
 </html>
