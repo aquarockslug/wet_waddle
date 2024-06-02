@@ -3,12 +3,11 @@ class Umbrella extends Phaser.Scene {
         umbrellaSpeed = 0.2;
         difficulty = 2;
 
-        constructor(config, endGame) {
+        constructor(config) {
                 super({
                         key: 'Umbrella'
                 })
                 this.config = config
-                this.endGame = endGame
         }
 
         async create() {
@@ -73,7 +72,7 @@ class Umbrella extends Phaser.Scene {
                                 fontSize: 96
                         }
                 )
-                this.scene.pause()
+                this.scene.pause('Umbrella')
         }
 
         createPlayer() {

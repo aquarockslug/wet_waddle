@@ -42,11 +42,17 @@ start = function() {
                 this.load.image('droplet', 'assets/drop.png');
                 this.load.image('background', 'assets/landscape.jpg');
                 this.load.json("sprites", "sprite-physics.json");
+                this.load.audio('music', 'daze.mp3')
         }
 
         function create() {
                 game.scene.add('Umbrella', new Umbrella(config))
                 game.scene.start('Umbrella')
+                this.music = this.sound.add('music', {
+                        volume: 0.2,
+                        loop: true
+                })
+                this.music.play()
         }
 
         function update() {}
